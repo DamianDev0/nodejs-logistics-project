@@ -1,0 +1,6 @@
+{
+  "warehouses": [{ "id": 1, "name": "Warehouse one", "location": "USA" }],
+  "shipments": [],
+  "drivers": [],
+  "vehicles": []
+}
