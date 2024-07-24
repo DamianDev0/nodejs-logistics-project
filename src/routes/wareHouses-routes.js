@@ -10,6 +10,7 @@ const routerWarehouse = Router();
 
 const fileWareHousesPath = path.join(__dirname, '../../server/data.json');
 
+//funcion que nos permite leer lo que haya en fileWareHousesPath
 const readWarehouse = async () => {
     try {
         const warehouses = await fs.readFile(fileWareHousesPath, 'utf-8');
@@ -19,6 +20,8 @@ const readWarehouse = async () => {
         throw new Error('Error reading warehouses');
     }
 };
+
+//funcion que nos permite escribir dentro de fileWareHousesPath
 
 const writeWareHouse = async (warehouses) => {
     try {
@@ -84,5 +87,56 @@ routerWarehouse.get('/:id', async (req,res) => {
         res.status(500).json({ error: err.message });
     }
 })
+
+// ruta para actualizar por id 
+
+routerWarehouse.put('/:id', async (req, res) => {
+    try {
+        const data = await readWarehouse()
+        const indexWareHouse = data.warehouses.findIndex(w => w.id === parseInt(req.params.id, 10))
+
+        if(!indexWareHouse === -1){
+            return res.status(404).json({message: "Warehouse not found"})
+        }
+
+        const updateWareHouse = {
+            ...data.warehouses[indexWareHouse],
+            name: req.body.name || data.warehouses[indexWareHouse].name,
+            location: req.body.location || data.warehouses[indexWareHouse].location
+        }
+
+        data.warehouses[indexWareHouse] = updateWareHouse
+        await writeWareHouse(data)
+        res.json({message: 'Warehouse updated successfully', warehouse: updateWareHouse})
+
+    }
+    catch (err){
+        res.status(500).json({ error: err.message });
+    }
+})
+
+// ruta para eliminar por id
+
+routerWarehouse.delete('/:id', async (req, res) => {
+    try {
+        const data = await readWarehouse()
+        const indexWareHouseDelete = data.warehouses.findIndex(w => w.id === parseInt(req.params.id,10))
+
+        if(indexWareHouseDelete === -1){
+            return res.status(404).json({message: "Warehouse not found"})
+        }
+
+        data.warehouses.splice(indexWareHouseDelete, 1)
+        await writeWareHouse(data)
+
+        res.json({message: 'Warehouse deleted successfully'})
+
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Internal Server Error' });;
+    }
+})
+
+
 
 export default routerWarehouse;
