@@ -1,1 +1,29 @@
-{"warehouses":[{"id":1,"name":"Amazon Fulfillment Center - Dallas","location":"Dallas, Texas, USA"},{"id":2,"name":"DHL Logistics Center - Frankfurt","location":"Frankfurt, Germany"},{"id":3,"name":"Walmart Distribution Center - Los Angeles","location":"Los Angeles, California, USA"},{"id":4,"name":"JD.com Warehouse - Beijing","location":"Beijing, China"},{"id":5,"name":"Samsung Distribution Center - Seoul","location":"Seoul, South Korea"}],"shipments":[{"id":1,"item":"Smartphone","quantity":"80","warehouseId":1},{"id":2,"item":"Computer","quantity":"30","warehouseId":1},{"id":3,"item":"Perras pa yeyo","quantity":"300","warehouseId":1}],"drivers":[{"id":1,"name":"Ramiro Tunuvala"}],"vehicles":[{"id":1,"model":"2002","driverId":1}]}
+{
+  "warehouses": [
+    {
+      "id": 10,
+      "name": "Chamos Unidos Fc",
+      "location": "Petare, Venezuela",
+      "driverId": 1,
+      "driverName": "Ramiro Tunuvala",
+      "parkedVehicleId": 2,
+      "parkedVehicleName": "Mustang"
+    },
+    {
+      "id": 11,
+      "name": "Chamos Unidos Fc",
+      "location": "Petare, Venezuela",
+      "driverId": 1,
+      "driverName": "Ramiro Tunuvala",
+      "parkedVehicleId": 2,
+      "parkedVehicleName": "Mustang"
+    }
+  ],
+  "shipments": [
+    { "id": 1, "item": "Smartphone", "quantity": "80", "warehouseId": 1 },
+    { "id": 2, "item": "Computer", "quantity": "30", "warehouseId": 1 },
+    { "id": 3, "item": "Perras pa yeyo", "quantity": "300", "warehouseId": 1 }
+  ],
+  "drivers": [{ "id": 1, "name": "Ramiro Tunuvala" }],
+  "vehicles": [{ "id": 2, "model": "2005", "name": "Mustang", "driverId": 1 }]
+}

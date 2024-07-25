@@ -10,7 +10,7 @@ const routerWarehouse = Router();
 
 const fileWareHousesPath = path.join(__dirname, '../../server/data.json');
 
-//funcion que nos permite leer lo que haya en fileWareHousesPath
+// Función que lee el archivo de almacenes
 const readWarehouse = async () => {
     try {
         const warehouses = await fs.readFile(fileWareHousesPath, 'utf-8');
@@ -21,9 +21,8 @@ const readWarehouse = async () => {
     }
 };
 
-//funcion que nos permite escribir dentro de fileWareHousesPath
-
-const writeWareHouse = async (warehouses) => {
+// Función que escribe en el archivo de almacenes
+const writeWarehouse = async (warehouses) => {
     try {
         await fs.writeFile(fileWareHousesPath, JSON.stringify(warehouses), 'utf-8');
     } catch (err) {
@@ -32,111 +31,112 @@ const writeWareHouse = async (warehouses) => {
     }
 };
 
-
-// ruta para crear un nuevo warehouse
-
+// Ruta para crear un nuevo warehouse
 routerWarehouse.post('/', async (req, res) => {
     try {
         const data = await readWarehouse();
+        const parkedVehicleId = req.body.parkedVehicleId;
+        const driverId = req.body.driverId;
 
-        const newWaterHouse = {
+        const findVehicle = data.vehicles.find(vehicle => vehicle.id === parkedVehicleId);
+        const findDriver = data.drivers.find(driver => driver.id === driverId);
+
+        if (!findVehicle) {
+            return res.status(404).json({ message: "Parked vehicle not found" });
+        }
+
+        if (!findDriver) {
+            return res.status(404).json({ message: "Driver not found" });
+        }
+
+        const newWarehouse = {
             id: data.warehouses.length + 1,
             name: req.body.name,
-            location: req.body.location
+            location: req.body.location,
+            driverId: driverId,
+            driverName: findDriver.name,
+            parkedVehicleId: parkedVehicleId,
+            parkedVehicleName: findVehicle.name
         };
 
-        data.warehouses.push(newWaterHouse);
-        await writeWareHouse(data);
+        data.warehouses.push(newWarehouse);
+        await writeWarehouse(data);
 
-        res.status(201).json({message: "Warehouse created successfully", wareHouse: newWaterHouse});
+        res.status(201).json({ message: "Warehouse created successfully", warehouse: newWarehouse });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// ruta para obtener todos los warehouses
-
-routerWarehouse.get('/', async (req,res) => {
+// Ruta para obtener todos los warehouses
+routerWarehouse.get('/', async (req, res) => {
     try {
-        const data = await readWarehouse()
+        const data = await readWarehouse();
         res.json(data.warehouses);
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
 
-})
-
-//ruta para obtener por el id
-
-routerWarehouse.get('/:id', async (req,res) => {
+// Ruta para obtener un warehouse por ID
+routerWarehouse.get('/:id', async (req, res) => {
     try {
+        const data = await readWarehouse();
+        const findWarehouse = data.warehouses.find(w => w.id === parseInt(req.params.id, 10));
 
-        const data = await readWarehouse()
-        const findWareHouse = data.warehouses.find(w => w.id === parseInt(req.params.id, 10))
-
-        if (!findWareHouse) {
+        if (!findWarehouse) {
             return res.status(404).json({ message: "Warehouse not found" });
         }
 
-        res.json(findWareHouse);
-
-    }
-
-    catch (err) {
+        res.json(findWarehouse);
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
-})
+});
 
-// ruta para actualizar por id 
-
+// Ruta para actualizar un warehouse por ID
 routerWarehouse.put('/:id', async (req, res) => {
     try {
-        const data = await readWarehouse()
-        const indexWareHouse = data.warehouses.findIndex(w => w.id === parseInt(req.params.id, 10))
+        const data = await readWarehouse();
+        const indexWarehouse = data.warehouses.findIndex(w => w.id === parseInt(req.params.id, 10));
 
-        if(!indexWareHouse === -1){
-            return res.status(404).json({message: "Warehouse not found"})
+        if (indexWarehouse === -1) {
+            return res.status(404).json({ message: "Warehouse not found" });
         }
 
-        const updateWareHouse = {
-            ...data.warehouses[indexWareHouse],
-            name: req.body.name || data.warehouses[indexWareHouse].name,
-            location: req.body.location || data.warehouses[indexWareHouse].location
-        }
+        const updatedWarehouse = {
+            ...data.warehouses[indexWarehouse],
+            name: req.body.name || data.warehouses[indexWarehouse].name,
+            location: req.body.location || data.warehouses[indexWarehouse].location,
+            parkedVehicleId: req.body.parkedVehicleId || data.warehouses[indexWarehouse].parkedVehicleId,
+            driverId: req.body.driverId || data.warehouses[indexWarehouse].driverId
+        };
 
-        data.warehouses[indexWareHouse] = updateWareHouse
-        await writeWareHouse(data)
-        res.json({message: 'Warehouse updated successfully', warehouse: updateWareHouse})
+        data.warehouses[indexWarehouse] = updatedWarehouse;
+        await writeWarehouse(data);
 
-    }
-    catch (err){
+        res.json({ message: 'Warehouse updated successfully', warehouse: updatedWarehouse });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
-})
-
-// ruta para eliminar por id
-
+});
+// Ruta para eliminar un warehouse por ID
 routerWarehouse.delete('/:id', async (req, res) => {
     try {
-        const data = await readWarehouse()
-        const indexWareHouseDelete = data.warehouses.findIndex(w => w.id === parseInt(req.params.id,10))
+        const data = await readWarehouse();
+        const indexWarehouseDelete = data.warehouses.findIndex(w => w.id === parseInt(req.params.id, 10));
 
-        if(indexWareHouseDelete === -1){
-            return res.status(404).json({message: "Warehouse not found"})
+        if (indexWarehouseDelete === -1) {
+            return res.status(404).json({ message: "Warehouse not found" });
         }
 
-        data.warehouses.splice(indexWareHouseDelete, 1)
-        await writeWareHouse(data)
+        data.warehouses.splice(indexWarehouseDelete, 1);
+        await writeWarehouse(data);
 
-        res.json({message: 'Warehouse deleted successfully'})
-
+        res.json({ message: 'Warehouse deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-    catch (err) {
-        res.status(500).json({ message: 'Internal Server Error' });;
-    }
-})
-
-
+});
 
 export default routerWarehouse;

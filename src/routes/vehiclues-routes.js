@@ -43,6 +43,7 @@ routerVehicles.post('/', async (req, res) => {
         const newVehicle = {
             id: data.vehicles.length + 1,
             model: req.body.model,
+            name: req.body.name,
             driverId: driverId
         }
 
