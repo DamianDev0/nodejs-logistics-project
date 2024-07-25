@@ -44,25 +44,46 @@ const writeDrivers = async (drivers)  => {
 
 routerDrivers.post('/', async (req, res) => {
     try {
+        // Leer todos los datos desde el archivo JSON
+        const data = await readDrivers();
+        const warehouseId = req.body.warehouseId;
 
-        const data = await readDrivers()
-
-        const newDriver = {
-            id: data.drivers.length + 1,
-            name: req.body.name
+        // Buscar el almacén
+        const findWarehouse = data.warehouses.find(w => w.id === warehouseId);
+        
+        // Verificar si el almacén existe
+        if (!findWarehouse) {
+            return res.status(404).json({ message: 'Warehouse not found' });
         }
 
-        data.drivers.push(newDriver)
-        await writeDrivers(data)
+        // Validar datos de entrada
+        const name = req.body.name;
+        if (!name) {
+            return res.status(400).json({ message: 'Driver name is required' });
+        }
 
-        res.json({message: 'shipment created successfully', driver: newDriver})
+        // Crear el nuevo conductor
+        const newDriver = {
+            id: data.drivers.length + 1,
+            name: name,
+            warehouseId: warehouseId,
+            vehiclesId: []
+        };
 
-    }
-    catch (err) {
+        data.drivers.push(newDriver);
+
+        findWarehouse.driversId.push(newDriver.id);
+
+        await writeDrivers(data);
+
+
+        res.status(201).json({ message: 'Driver created successfully', driver: newDriver });
+    } catch (err) {
+        console.error(err); // Agregar esta línea para registrar el error
         res.status(500).json({ error: err.message });
     }
+});
 
-})
 
 routerDrivers.get('/', async (req, res) => {
     const data = await readDrivers()

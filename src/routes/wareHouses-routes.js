@@ -34,32 +34,29 @@ const writeWarehouse = async (warehouses) => {
 // Ruta para crear un nuevo warehouse
 routerWarehouse.post('/', async (req, res) => {
     try {
+        // Leer todos los datos desde el archivo JSON
         const data = await readWarehouse();
-        const parkedVehicleId = req.body.parkedVehicleId;
-        const driverId = req.body.driverId;
+        const parkedVehicleId = req.body.parkedVehicleId        
 
-        const findVehicle = data.vehicles.find(vehicle => vehicle.id === parkedVehicleId);
-        const findDriver = data.drivers.find(driver => driver.id === driverId);
+        const findVehicleId = data.vehicles.find(v => v.id === parkedVehicleId)
 
-        if (!findVehicle) {
-            return res.status(404).json({ message: "Parked vehicle not found" });
+        if(!findVehicleId){
+            return res.status(404).json({ message: "Warehouse not found" });
         }
 
-        if (!findDriver) {
-            return res.status(404).json({ message: "Driver not found" });
-        }
-
+        // Crear el nuevo almacén
         const newWarehouse = {
             id: data.warehouses.length + 1,
             name: req.body.name,
             location: req.body.location,
-            driverId: driverId,
-            driverName: findDriver.name,
             parkedVehicleId: parkedVehicleId,
-            parkedVehicleName: findVehicle.name
+            driversId: [],
+            shipments: [] 
         };
 
         data.warehouses.push(newWarehouse);
+      
+        // Guardar los datos actualizados en el archivo JSON
         await writeWarehouse(data);
 
         res.status(201).json({ message: "Warehouse created successfully", warehouse: newWarehouse });
@@ -67,6 +64,7 @@ routerWarehouse.post('/', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // Ruta para obtener todos los warehouses
 routerWarehouse.get('/', async (req, res) => {

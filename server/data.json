@@ -1,29 +1,78 @@
 {
   "warehouses": [
     {
-      "id": 10,
-      "name": "Chamos Unidos Fc",
-      "location": "Petare, Venezuela",
-      "driverId": 1,
-      "driverName": "Ramiro Tunuvala",
-      "parkedVehicleId": 2,
-      "parkedVehicleName": "Mustang"
+      "id": 1,
+      "name": "Samsung Distribution Center - Seoul",
+      "location": "Seoul, South Korea",
+      "parkedVehicleId": 1,
+      "driversId": [2, 3],
+      "shipments": [1]
     },
     {
-      "id": 11,
-      "name": "Chamos Unidos Fc",
-      "location": "Petare, Venezuela",
-      "driverId": 1,
-      "driverName": "Ramiro Tunuvala",
-      "parkedVehicleId": 2,
-      "parkedVehicleName": "Mustang"
+      "id": 2,
+      "name": "Samsung Distribution Center - Seoul",
+      "location": "Seoul, South Korea",
+      "parkedVehicleId": 1,
+      "driversId": [3],
+      "shipments": [2, 3, 4]
     }
   ],
   "shipments": [
-    { "id": 1, "item": "Smartphone", "quantity": "80", "warehouseId": 1 },
-    { "id": 2, "item": "Computer", "quantity": "30", "warehouseId": 1 },
-    { "id": 3, "item": "Perras pa yeyo", "quantity": "300", "warehouseId": 1 }
+    {
+      "id": 1,
+      "item": "Smartphone",
+      "quantity": "100",
+      "warehouseId": 1,
+      "vehicleId": 1
+    },
+    {
+      "id": 2,
+      "item": "Smartphone",
+      "quantity": "100",
+      "warehouseId": 2,
+      "vehicleId": 1
+    },
+    {
+      "id": 3,
+      "item": "Smartphone",
+      "quantity": "100",
+      "warehouseId": 2,
+      "vehicleId": 1
+    },
+    {
+      "id": 4,
+      "item": "Smartphone",
+      "quantity": "100",
+      "warehouseId": 2,
+      "vehicleId": 1
+    }
   ],
-  "drivers": [{ "id": 1, "name": "Ramiro Tunuvala" }],
-  "vehicles": [{ "id": 2, "model": "2005", "name": "Mustang", "driverId": 1 }]
+  "drivers": [
+    { "id": 2, "name": "Ramiro Alvarez", "warehouseId": 1, "vehiclesId": [] },
+    { "id": 3, "name": "Ramiro Tunuvala", "warehouseId": 1, "vehiclesId": [] },
+    { "id": 3, "name": "Pablo Tunuvala", "warehouseId": 2, "vehiclesId": [] }
+  ],
+  "vehicles": [
+    {
+      "id": 3,
+      "model": "Toyota Prado",
+      "year": "2024",
+      "warehousesId": [1],
+      "driverId": 1
+    },
+    {
+      "id": 4,
+      "model": "Toyota Prado",
+      "year": "2024",
+      "warehousesId": [1],
+      "driverId": 1
+    },
+    {
+      "id": 5,
+      "model": "Toyota Prado",
+      "year": "2024",
+      "warehousesId": [2],
+      "driverId": 1
+    }
+  ]
 }

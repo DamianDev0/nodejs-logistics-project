@@ -47,8 +47,8 @@ routerShipments.post('/', async (req, res) => {
 
         const data = await readShipments()
         const vehicleId = req.body.vehicleId
-
         const wareHouseId = req.body.warehouseId
+        
         const findWareHouseId = data.warehouses.find(w => w.id === wareHouseId)
         const findVehicleId = data.vehicles.find(v => v.id === findWareHouseId)
 
@@ -61,10 +61,12 @@ routerShipments.post('/', async (req, res) => {
             item: req.body.item,
             quantity : req.body.quantity,
             warehouseId: wareHouseId,
-            
+            vehicleId: vehicleId
         }
 
         data.shipments.push(newShipment)
+        findWareHouseId.shipments.push(newShipment.id)
+
         await writeShipments(data)
 
         res.json({message: 'shipment created successfully', shipment: newShipment})
